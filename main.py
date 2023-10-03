@@ -14,6 +14,9 @@ from langchain.chains import RetrievalQA
 import streamlit as st
 import tempfile
 import os
+from streamlit_extras.buy_me_a_coffee import button
+
+button(username="harkjael", floating=True, width=221)
 
 # title
 st.title("MyChatPDF")
