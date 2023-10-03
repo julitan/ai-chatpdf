@@ -2,8 +2,8 @@ __import__('pysqlite3')
 import sys
 sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
 
-from dotenv import load_dotenv
-load_dotenv()
+# from dotenv import load_dotenv
+# load_dotenv()
 from langchain.document_loaders import PyPDFLoader
 from langchain.text_splitter import RecursiveCharacterTextSplitter
 from langchain.embeddings import OpenAIEmbeddings
@@ -21,6 +21,10 @@ button(username="harkjael", floating=True, width=221)
 # title
 st.title("MyChatPDF")
 st.write("---")
+
+# openAI Key 입력 받기
+openai_key = st.text_input('OPEN_AI_INPUT_KEY', type='password')
+
 
 # file upload
 uploaded_file = st.file_uploader("Choose a pdf file", type=["pdf"])
@@ -51,7 +55,7 @@ if uploaded_file is not None:
     texts = text_splitter.split_documents(pages)
 
     # Embeddings
-    embeddings_model = OpenAIEmbeddings()
+    embeddings_model = OpenAIEmbeddings(openai_api_key=openai_key)
 
 
     # load it into Chroma
@@ -61,7 +65,7 @@ if uploaded_file is not None:
     st.header("myChatPDF에게 질문!")
     question = st.text_input("질문을 입력하세요")
     if st.button("질문하기"):
-        llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0)
+        llm = ChatOpenAI(model_name="gpt-3.5-turbo", temperature=0, openai_api_key=openai_key)
         qa_chain = RetrievalQA.from_chain_type(llm,retriever=db.as_retriever())
         result = qa_chain({"query": question})
         st.write(result["result"])
